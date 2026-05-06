@@ -567,7 +567,7 @@ const DATA = {"42015790": [{"apt": "202", "proyecto": "SUNSET TOWER", "plan": "L
 ;
 
 // ═══════════ HELPERS ═══════════
-const co = n => n==null?null:'$ '+Math.abs(Math.round(n)).toLocaleString('es-CO');
+const co = n => { if(n==null) return null; const v=Math.round(Math.abs(parseFloat(n))); return '$ '+v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
 const isMora = s => s&&(s.toLowerCase().includes('mora')||s.toLowerCase()==='en mora');
 const isAlDia = s => s&&(s.toLowerCase().includes('al dia')||s.toLowerCase().includes('al d\u00eda'));
 const pnombre = n => { const p=n.trim().split(' ')[0]; return p.charAt(0).toUpperCase()+p.slice(1).toLowerCase(); };
