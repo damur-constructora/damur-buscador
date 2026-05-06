@@ -254,7 +254,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 <div class="page active" id="page-dashboard">
   <div style="display:flex;align-items:center;gap:16px;margin-bottom:6px">
     <div class="page-title">Panel de Cobranza</div>
-    <span class="update-badge">⏱ Actualizado: 06/05/2026 20:18</span>
+    <span class="update-badge">⏱ Actualizado: 06/05/2026 20:49</span>
   </div>
   <div class="page-sub">Resumen general · Damur Constructora</div>
 
@@ -567,7 +567,19 @@ const DATA = {"42015790": [{"apt": "202", "proyecto": "SUNSET TOWER", "plan": "L
 ;
 
 // ═══════════ HELPERS ═══════════
-const co = n => { if(n==null) return null; const v=Math.round(Math.abs(parseFloat(n))); return '$ '+v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
+const co = n => {
+  if(n==null||n===undefined) return null;
+  const num = typeof n==='string' ? parseFloat(n) : Number(n);
+  if(isNaN(num)) return null;
+  const rounded = Math.round(Math.abs(num));
+  const parts = rounded.toString().split('');
+  let result = '';
+  parts.reverse().forEach((d,i) => {
+    if(i>0 && i%3===0) result = '.' + result;
+    result = d + result;
+  });
+  return '$ ' + result;
+}
 const isMora = s => s&&(s.toLowerCase().includes('mora')||s.toLowerCase()==='en mora');
 const isAlDia = s => s&&(s.toLowerCase().includes('al dia')||s.toLowerCase().includes('al d\u00eda'));
 const pnombre = n => { const p=n.trim().split(' ')[0]; return p.charAt(0).toUpperCase()+p.slice(1).toLowerCase(); };
