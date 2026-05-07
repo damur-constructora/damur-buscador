@@ -263,7 +263,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
     <div class="stat-card s-mora"><div class="stat-label">En Mora</div><div class="stat-num" style="color:var(--mora)" id="s-mora">—</div><div class="stat-sub">Gestión urgente</div></div>
     <div class="stat-card s-aldia"><div class="stat-label">Al Día</div><div class="stat-num" style="color:var(--aldia)" id="s-aldia">—</div><div class="stat-sub">Al corriente</div></div>
     <div class="stat-card s-warn"><div class="stat-label">Vencen Mañana</div><div class="stat-num" style="color:var(--warn)" id="s-mañana">—</div><div class="stat-sub">Alertas próximas</div></div>
-    <div class="stat-card s-warn"><div class="stat-label">Cartera en Mora</div><div class="stat-num" style="color:var(--warn);font-size:1.6rem">$218M</div><div class="stat-sub">Total a recuperar</div></div>
+    <div class="stat-card s-warn"><div class="stat-label">Cartera en Mora</div><div class="stat-num" style="color:var(--warn);font-size:1.4rem" id="s-total-mora">—</div><div class="stat-sub">Total a recuperar</div></div>
   </div>
 
   <div id="alert-manana-box" style="display:none">
@@ -629,6 +629,23 @@ for(const [ced,apts] of Object.entries(DATA)){
 // multiCount removed
 
 document.getElementById('s-total').textContent=Object.keys(DATA).length;
+// Calculate total mora
+let totalMoraVal=0;
+const seenMoraApts=new Set();
+for(const apts of Object.values(DATA)){
+  for(const a of apts){
+    const k=a.apt+'|'+a.proyecto;
+    if(isMora(a.estado)&&!seenMoraApts.has(k)){
+      seenMoraApts.add(k);
+      if(a.total_cancelar_mora){
+        const v=parseFloat(String(a.total_cancelar_mora));
+        if(!isNaN(v)&&v>0) totalMoraVal+=v;
+      }
+    }
+  }
+}
+const totalMoraM=(totalMoraVal/1000000).toFixed(0);
+document.getElementById('s-total-mora').textContent='$'+totalMoraM+'M';
 document.getElementById('s-mora').textContent=MORA_UNIQUE.length;
 document.getElementById('s-aldia').textContent=aldiaCount;
 document.getElementById('s-mañana').textContent=alertManana.length;
