@@ -1031,7 +1031,6 @@ function updateJurStatus(id,newStatus){
     fetch(SHEETS_URL,{method:'POST',body:JSON.stringify({action:'updateJuridicoStatus',id:id,estado:newStatus})}).catch(e=>{});
     renderJuridico();
   }
-}).catch(e=>console.log('Save error:',e));renderJuridico();}
 }
 
 const tipoDocLabel={otrosi:'Otrosí',contrato:'Contrato',acuerdo:'Acuerdo de pago',demanda:'Demanda',notificacion:'Notificación',otro:'Otro'};
