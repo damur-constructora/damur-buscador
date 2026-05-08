@@ -861,10 +861,19 @@ document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.cu
 
 // ═══════════ GESTIONES ═══════════
 let gestiones=[];
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbykVTtYFDVjNJOf3LAVWgmkELpYsMeXJQetxRhUE_0xdaQFjNS5Zz8pbNQikDBm2aVIuA/exec';
+
 async function loadGestiones(){
   try{
-    const r=await window.storage.get('damur_gestiones');
-    if(r&&r.value) gestiones=JSON.parse(r.value);
+    const r = await fetch(SHEETS_URL);
+    const rows = await r.json();
+    gestiones = rows.slice(1).filter(r=>r[0]).map(r=>{
+      return {
+        id: r[0], fecha: r[1], cedula: r[2], nombre: r[3],
+        apt: r[4], proyecto: r[5], estado: r[6], responsable: r[7],
+        canal: r[8], respuesta: r[9], fechaPago: r[10], cumplio: r[11], obs: r[12]
+      };
+    });
   }catch(e){ gestiones=[]; }
   renderGestiones();
 }
@@ -895,7 +904,11 @@ function saveGestion(){
     fechaPago:document.getElementById('g-fecha-pago').value,cumplio:document.getElementById('g-cumplio').value,
     obs:document.getElementById('g-obs').value.trim()};
   gestiones.unshift(g);
-  try{window.storage.set('damur_gestiones',JSON.stringify(gestiones));}catch(e){}
+  // Save to Google Sheets
+  fetch(SHEETS_URL, {
+    method: 'POST',
+    body: JSON.stringify({action:'save',...g})
+  }).catch(e=>console.log('Save error:',e));
   renderGestiones();
   ['g-cedula','g-nombre','g-apt','g-proyecto','g-estado','g-responsable','g-fecha-pago','g-obs'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('g-fecha').value=new Date().toISOString().split('T')[0];
@@ -905,7 +918,6 @@ function saveGestion(){
 function deleteGestion(id){
   if(!confirm('¿Eliminar esta gestión?'))return;
   gestiones=gestiones.filter(g=>g.id!==id);
-  try{window.storage.set('damur_gestiones',JSON.stringify(gestiones));}catch(e){}
   renderGestiones();
 }
 
