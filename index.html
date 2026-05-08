@@ -599,6 +599,8 @@ function showPage(id,el){
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(el)el.classList.add('active');
+  if(id==='gestiones') loadGestiones();
+  if(id==='juridico') loadJuridicos();
 }
 
 // ═══════════ DASHBOARD ═══════════
@@ -877,7 +879,7 @@ async function loadGestiones(){
   }catch(e){ gestiones=[]; }
   renderGestiones();
 }
-loadGestiones();
+// gestiones loaded on demand
 
 function autoFillGest(){
   const ced=document.getElementById('g-cedula').value.trim();
@@ -968,7 +970,7 @@ async function loadJuridicos(){
   }catch(e){ juridicos=[]; }
   renderJuridico();
 }
-loadJuridicos();
+// juridicos loaded on demand
 
 function autoFillJur(){
   const ced=document.getElementById('j-cedula').value.trim();
